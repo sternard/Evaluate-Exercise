@@ -84,6 +84,6 @@ def evaluate(expression: str) -> Optional[int]:
 
         return result
 
-    except ValueError:
+    except (ValueError, RecursionError):
         # An error at any nesting level invalidates the entire expression.
         return None
