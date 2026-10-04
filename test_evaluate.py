@@ -1,4 +1,5 @@
 import unittest
+import sys
 
 from evaluate import evaluate
 
@@ -376,6 +377,12 @@ class ValidationTests(unittest.TestCase):
         for value in (None, 7, 7.0, True, [], {}, b"7"):
             with self.subTest(value=value):
                 self.assertIsNone(evaluate(value))
+
+    def test_returns_none_when_nesting_exceeds_recursion_limit(self):
+        depth = sys.getrecursionlimit()
+        expression = "(" * depth + "1" + ")" * depth
+
+        self.assertIsNone(evaluate(expression))
 
 
 if __name__ == "__main__":
