@@ -55,5 +55,30 @@ class SubtractionTests(unittest.TestCase):
         self.assertEqual(evaluate("004 - 008"), -4)
 
 
+class MultiplicationTests(unittest.TestCase):
+    def test_multiply_two_integers(self):
+        self.assertEqual(evaluate("3 * 4"), 12)
+
+    def test_returns_integer(self):
+        self.assertIs(type(evaluate("3 * 4")), int)
+
+    def test_multiply_by_one(self):
+        self.assertEqual(evaluate("4 * 1"), 4)
+        self.assertEqual(evaluate("1 * 7"), 7)
+
+    def test_multiply_by_zero(self):
+        self.assertEqual(evaluate("0 * 7"), 0)
+        self.assertEqual(evaluate("7 * 0"), 0)
+
+    def test_multiply_two_zeros(self):
+        self.assertEqual(evaluate("0 * 0"), 0)
+
+    def test_multiply_multi_digit_integers(self):
+        self.assertEqual(evaluate("123 * 456"), 56088)
+
+    def test_multiply_leading_zeros_as_decimal(self):
+        self.assertEqual(evaluate("004 * 008"), 32)
+
+
 if __name__ == "__main__":
     unittest.main()
