@@ -27,6 +27,8 @@ def evaluate(expression: str) -> Optional[int]:
 
 ## Usage
 
+To run the test suite, execute `python3 -m unittest -v` from the project directory. 
+
 ## Requirements
 
 - Expressions should be parsed left to right instead of using standard order of operations.
