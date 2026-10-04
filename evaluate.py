@@ -14,6 +14,19 @@ def evaluate(expression: str) -> Optional[int]:
         elif "*" in expression:
             left, right = expression.split("*")
             return int(left, 10) * int(right, 10)
+        elif "/" in expression:
+            left, right = expression.split("/")
+            left = int(left, 10)
+            right = int(right, 10)
+
+            if right == 0:
+                return None
+
+            # Reject division that would produce a fractional result.
+            if left % right != 0:
+                return None
+
+            return left // right
         else:
             return None
     except ValueError:
