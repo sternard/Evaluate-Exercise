@@ -80,5 +80,35 @@ class MultiplicationTests(unittest.TestCase):
         self.assertEqual(evaluate("004 * 008"), 32)
 
 
+class DivisionTests(unittest.TestCase):
+    def test_division_two_integers(self):
+        self.assertEqual(evaluate("12 / 4"), 3)
+
+    def test_returns_integer(self):
+        self.assertIs(type(evaluate("12 / 4")), int)
+
+    def test_division_by_one(self):
+        self.assertEqual(evaluate("4 / 1"), 4)
+
+    def test_zero_divided_by_nonzero(self):
+        self.assertEqual(evaluate("0 / 7"), 0)
+
+    def test_division_by_zero(self):
+        self.assertIsNone(evaluate("7 / 0"))
+
+    def test_division_two_zeros(self):
+        self.assertIsNone(evaluate("0 / 0"))
+
+    def test_division_multi_digit_integers(self):
+        self.assertEqual(evaluate("408 / 102"), 4)
+
+    def test_division_leading_zeros_as_decimal(self):
+        self.assertEqual(evaluate("008 / 004"), 2)
+
+    def test_rejects_non_integral_division(self):
+        self.assertIsNone(evaluate("5 / 2"))
+        self.assertIsNone(evaluate("1 / 2"))
+
+
 if __name__ == "__main__":
     unittest.main()
