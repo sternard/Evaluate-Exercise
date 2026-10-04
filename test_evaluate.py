@@ -227,5 +227,86 @@ class LeftToRightTests(unittest.TestCase):
         self.assertIsNone(evaluate("8 / 2 / 0"))
 
 
+class ParenthesesTests(unittest.TestCase):
+    def test_parenthesised_operand_on_the_right(self):
+        self.assertEqual(evaluate("2 * (3 + 4)"), 14)
+
+    def test_parenthesised_operand_on_the_left(self):
+        self.assertEqual(evaluate("(1 + 3) * 2"), 8)
+
+    def test_whole_expression_in_parentheses(self):
+        self.assertEqual(evaluate("(2 + 3)"), 5)
+
+    def test_single_integer_in_parentheses(self):
+        self.assertEqual(evaluate("(7)"), 7)
+
+    def test_signed_integer_in_parentheses(self):
+        self.assertEqual(evaluate("(-2)"), -2)
+        self.assertEqual(evaluate("(+2)"), 2)
+
+    def test_multiple_parenthesised_operands(self):
+        self.assertEqual(evaluate("(2 + 3) * (4 - 1)"), 15)
+
+    def test_left_to_right_order_inside_parentheses(self):
+        self.assertEqual(evaluate("(1 + 3 * 4)"), 16)
+        self.assertEqual(evaluate("(8 + 4 / 3)"), 4)
+
+    def test_left_to_right_order_outside_parentheses(self):
+        self.assertEqual(evaluate("1 + (2 + 3) * 4"), 24)
+
+    def test_binary_subtraction_before_parentheses(self):
+        self.assertEqual(evaluate("1 - (2 + 3)"), -4)
+
+    def test_nested_parentheses(self):
+        self.assertEqual(evaluate("2 * (3 + (4 - 1))"), 12)
+        self.assertEqual(evaluate("4 + (12 / (1 * 2))"), 10)
+
+    def test_redundant_nested_parentheses(self):
+        self.assertEqual(evaluate("(((7)))"), 7)
+
+    def test_nested_parentheses_in_both_operands(self):
+        self.assertEqual(evaluate("(1 + (2 * 3)) * (4 - (5 - 3))"), 14)
+
+    def test_returns_integer(self):
+        self.assertIs(type(evaluate("2 * (3 + 4)")), int)
+
+    def test_rejects_empty_parentheses(self):
+        self.assertIsNone(evaluate("()"))
+        self.assertIsNone(evaluate("2 + ()"))
+        self.assertIsNone(evaluate("(())"))
+
+    def test_rejects_unmatched_parentheses(self):
+        self.assertIsNone(evaluate("(2 + 3"))
+        self.assertIsNone(evaluate("2 + 3)"))
+        self.assertIsNone(evaluate("(1 + (12 * 2)"))
+        self.assertIsNone(evaluate("((2 + 3)))"))
+
+    def test_rejects_parentheses_in_the_wrong_order(self):
+        self.assertIsNone(evaluate(")("))
+        self.assertIsNone(evaluate("2 + )3("))
+
+    def test_rejects_signs_applied_directly_to_parentheses(self):
+        self.assertIsNone(evaluate("-(2 + 3)"))
+        self.assertIsNone(evaluate("+(2 + 3)"))
+        self.assertIsNone(evaluate("2 * -(3 + 4)"))
+        self.assertIsNone(evaluate("1 + -(2 + 3)"))
+
+    def test_rejects_parenthesised_zero_divisor(self):
+        self.assertIsNone(evaluate("3 / (3 - 3)"))
+        self.assertIsNone(evaluate("3 / ((2 + 1) - 3)"))
+
+    def test_propagates_errors_from_parenthesised_expressions(self):
+        self.assertIsNone(evaluate("1 + (3 / 0)"))
+        self.assertIsNone(evaluate("0 * (3 / 0)"))
+        self.assertIsNone(evaluate("1 + (2 *)"))
+        self.assertIsNone(evaluate("1 + (2 + (3 / 0))"))
+
+    def test_rejects_non_integral_division_inside_parentheses(self):
+        self.assertIsNone(evaluate("(5 / 2) * 2"))
+        self.assertIsNone(evaluate("2 * (5 / 2)"))
+        self.assertIsNone(evaluate("(5 / 2) * 0"))
+        self.assertIsNone(evaluate("1 + (2 + (5 / 2))"))
+
+
 if __name__ == "__main__":
     unittest.main()
