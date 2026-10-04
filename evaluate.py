@@ -4,6 +4,9 @@ from typing import Optional
 
 def evaluate(expression: str) -> Optional[int]:
     """Returns the result, or None if there was an error."""
+    if not isinstance(expression, str):
+        return None
+
     try:
         # Allow one optional sign directly attached to ASCII decimal digits.
         integer_pattern = re.compile(r"[+-]?[0-9]+")
