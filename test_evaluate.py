@@ -308,5 +308,75 @@ class ParenthesesTests(unittest.TestCase):
         self.assertIsNone(evaluate("1 + (2 + (5 / 2))"))
 
 
+class ValidationTests(unittest.TestCase):
+    def test_accepts_whitespace_between_tokens(self):
+        for expression in (" 2 + 3 ", "\t2\t+\n3\r\n"):
+            with self.subTest(expression=expression):
+                self.assertEqual(evaluate(expression), 5)
+
+    def test_accepts_whitespace_around_parentheses(self):
+        self.assertEqual(evaluate(" \t( 2 +\n3 )\t * 4 \n"), 20)
+
+    def test_rejects_whitespace_within_numbers(self):
+        for expression in ("1 2", "1\t2", "1\n2"):
+            with self.subTest(expression=expression):
+                self.assertIsNone(evaluate(expression))
+
+    def test_rejects_whitespace_between_sign_and_digits(self):
+        for expression in ("- 2", "+\t2", "1 + -\n2"):
+            with self.subTest(expression=expression):
+                self.assertIsNone(evaluate(expression))
+
+    def test_accepts_standalone_integers(self):
+        cases = (
+            ("4", 4),
+            ("0", 0),
+            ("-4", -4),
+            ("+4", 4),
+            ("004", 4),
+            ("-004", -4),
+        )
+        for expression, expected in cases:
+            with self.subTest(expression=expression):
+                result = evaluate(expression)
+                self.assertEqual(result, expected)
+                self.assertIs(type(result), int)
+
+    def test_rejects_unsupported_number_formats(self):
+        for expression in ("2.5", "1e3", "0x10", "1_000", "１２"):
+            with self.subTest(expression=expression):
+                self.assertIsNone(evaluate(expression))
+
+    def test_rejects_unsupported_tokens(self):
+        for expression in ("2 ** 3", "4 // 2", "4 % 2", "[2 + 3]", "2 + x"):
+            with self.subTest(expression=expression):
+                self.assertIsNone(evaluate(expression))
+
+    def test_rejects_incomplete_or_malformed_expressions(self):
+        for expression in ("* 2", "2 +", "2 + * 3", "2 + -"):
+            with self.subTest(expression=expression):
+                self.assertIsNone(evaluate(expression))
+
+    def test_rejects_implied_multiplication(self):
+        for expression in ("2(3 + 4)", "(2)(3)", "(2)3"):
+            with self.subTest(expression=expression):
+                self.assertIsNone(evaluate(expression))
+
+    def test_rejects_trailing_content(self):
+        for expression in ("2 + 3xyz", "2 + 3 4"):
+            with self.subTest(expression=expression):
+                self.assertIsNone(evaluate(expression))
+
+    def test_rejects_empty_or_whitespace_only_input(self):
+        for expression in ("", "   ", "\t\n\r"):
+            with self.subTest(expression=expression):
+                self.assertIsNone(evaluate(expression))
+
+    def test_rejects_non_string_inputs(self):
+        for value in (None, 7, 7.0, True, [], {}, b"7"):
+            with self.subTest(value=value):
+                self.assertIsNone(evaluate(value))
+
+
 if __name__ == "__main__":
     unittest.main()
