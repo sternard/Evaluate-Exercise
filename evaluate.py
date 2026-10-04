@@ -11,6 +11,9 @@ def evaluate(expression: str) -> Optional[int]:
         elif "-" in expression:
             left, right = expression.split("-")
             return int(left, 10) - int(right, 10)
+        elif "*" in expression:
+            left, right = expression.split("*")
+            return int(left, 10) * int(right, 10)
         else:
             return None
     except ValueError:
