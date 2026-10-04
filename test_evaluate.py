@@ -175,5 +175,57 @@ class OperandTests(unittest.TestCase):
         self.assertIsNone(evaluate("3 * --2"))
 
 
+class LeftToRightTests(unittest.TestCase):
+    def test_successive_additions(self):
+        self.assertEqual(evaluate("1 + 2 + 3"), 6)
+
+    def test_successive_subtractions(self):
+        self.assertEqual(evaluate("10 - 3 - 2"), 5)
+
+    def test_successive_multiplications(self):
+        self.assertEqual(evaluate("2 * 3 * 4"), 24)
+
+    def test_successive_divisions(self):
+        self.assertEqual(evaluate("24 / 4 / 2"), 3)
+
+    def test_multiplication_does_not_take_precedence(self):
+        # Ensure traditional BIDMAS results are not respected.
+        self.assertEqual(evaluate("1 + 3 * 4"), 16)
+        self.assertEqual(evaluate("10 - 2 * 3"), 24)
+
+    def test_division_does_not_take_precedence(self):
+        self.assertEqual(evaluate("8 + 4 / 3"), 4)
+        self.assertEqual(evaluate("20 - 4 / 4"), 4)
+
+    def test_mixed_operators_in_longer_expression(self):
+        self.assertEqual(evaluate("20 + 4 / 6 * 3 - 2"), 10)
+
+    def test_signed_operands_in_successive_operations(self):
+        self.assertEqual(evaluate("1+-2*-3"), 3)
+        self.assertEqual(evaluate("1--2*3"), 9)
+        self.assertEqual(evaluate("-8 / -2 + 3"), 7)
+        self.assertEqual(evaluate("+1++2*+3"), 9)
+
+    def test_zero_and_negative_intermediate_results(self):
+        self.assertEqual(evaluate("1 + 2 - 3"), 0)
+        self.assertEqual(evaluate("1 + 2 - 3 + 4"), 4)
+        self.assertEqual(evaluate("1 - 3 * 2 + 5"), 1)
+
+    def test_returns_integer(self):
+        self.assertIs(type(evaluate("1 + 3 * 4")), int)
+
+    def test_rejects_non_integral_intermediate_division(self):
+        self.assertIsNone(evaluate("5 / 2 * 2"))
+        self.assertIsNone(evaluate("5 / 2 * 0"))
+
+    def test_rejects_non_integral_division_after_successful_operations(self):
+        self.assertIsNone(evaluate("8 / 2 / 3"))
+        self.assertIsNone(evaluate("2 + 3 / 2 * 2"))
+
+    def test_rejects_division_by_zero_in_chain(self):
+        self.assertIsNone(evaluate("3 / 0 + 4"))
+        self.assertIsNone(evaluate("8 / 2 / 0"))
+
+
 if __name__ == "__main__":
     unittest.main()
