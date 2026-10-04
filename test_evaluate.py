@@ -110,5 +110,70 @@ class DivisionTests(unittest.TestCase):
         self.assertIsNone(evaluate("1 / 2"))
 
 
+class OperandTests(unittest.TestCase):
+    def test_addition_with_negative_operands(self):
+        self.assertEqual(evaluate("-1 + 2"), 1)
+        self.assertEqual(evaluate("1 + -2"), -1)
+        self.assertEqual(evaluate("-1 + -2"), -3)
+
+    def test_addition_with_positive_signs(self):
+        self.assertEqual(evaluate("+1 + 2"), 3)
+        self.assertEqual(evaluate("1 + +2"), 3)
+        self.assertEqual(evaluate("+1 + +2"), 3)
+
+    def test_subtraction_with_negative_operands(self):
+        self.assertEqual(evaluate("-1 - 2"), -3)
+        self.assertEqual(evaluate("1 - -2"), 3)
+        self.assertEqual(evaluate("-1 - -2"), 1)
+
+    def test_subtraction_with_positive_signs(self):
+        self.assertEqual(evaluate("+3 - 2"), 1)
+        self.assertEqual(evaluate("3 - +2"), 1)
+        self.assertEqual(evaluate("+3 - +2"), 1)
+
+    def test_multiplication_with_negative_operands(self):
+        self.assertEqual(evaluate("-3 * 2"), -6)
+        self.assertEqual(evaluate("3 * -2"), -6)
+        self.assertEqual(evaluate("-3 * -2"), 6)
+
+    def test_multiplication_with_positive_signs(self):
+        self.assertEqual(evaluate("+3 * 2"), 6)
+        self.assertEqual(evaluate("3 * +2"), 6)
+        self.assertEqual(evaluate("+3 * +2"), 6)
+
+    def test_division_with_negative_operands(self):
+        self.assertEqual(evaluate("-8 / 2"), -4)
+        self.assertEqual(evaluate("8 / -2"), -4)
+        self.assertEqual(evaluate("-8 / -2"), 4)
+
+    def test_division_with_positive_signs(self):
+        self.assertEqual(evaluate("+8 / 2"), 4)
+        self.assertEqual(evaluate("8 / +2"), 4)
+        self.assertEqual(evaluate("+8 / +2"), 4)
+
+    def test_accepts_signed_zero_operands(self):
+        self.assertEqual(evaluate("-0 + 3"), 3)
+        self.assertEqual(evaluate("3 * -0"), 0)
+        self.assertEqual(evaluate("0 / -3"), 0)
+        self.assertEqual(evaluate("+0 + 3"), 3)
+
+    def test_rejects_non_integral_division_with_signed_operands(self):
+        self.assertIsNone(evaluate("-5 / 2"))
+        self.assertIsNone(evaluate("5 / -2"))
+        self.assertIsNone(evaluate("-5 / -2"))
+
+    def test_rejects_division_by_signed_zero(self):
+        self.assertIsNone(evaluate("3 / -0"))
+        self.assertIsNone(evaluate("3 / +0"))
+
+    def test_rejects_multiple_signs_on_one_integer(self):
+        self.assertIsNone(evaluate("++3 + 2"))
+        self.assertIsNone(evaluate("--3 + 2"))
+        self.assertIsNone(evaluate("3 + +-2"))
+        self.assertIsNone(evaluate("3 + -+2"))
+        self.assertIsNone(evaluate("1+++2"))
+        self.assertIsNone(evaluate("3 * --2"))
+
+
 if __name__ == "__main__":
     unittest.main()
